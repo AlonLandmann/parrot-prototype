@@ -8,12 +8,128 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  email     String   @unique
-  hash      String
+  id             Int                @id @default(autoincrement())
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+  email          String             @unique
+  hash           String
+  following      Follow[]           @relation("follower")
+  followers      Follow[]           @relation("followee")
+  notifications  Notification[]
+  resources      UserResourceLink[]
+  reviewsWritten Review[]
+  reviewsLiked   UserReviewLike[]
+  roadmaps       UserRoadmapLink[]
+}
+
+model Follow {
+  id         Int  @default(autoincrement())
+  follower   User @relation("follower", fields: [followerId], references: [id])
+  followerId Int
+  followee   User @relation("followee", fields: [followeeId], references: [id])
+  followeeId Int
+
+  @@unique([followerId, followeeId])
+}
+
+model Notification {
+  id      Int    @id @default(autoincrement())
+  title   String
+  content String
+  status  String
+  user    User   @relation(fields: [userId], references: [id])
+  userId  Int
 }
 
 model Resource {
-  id Int @id @default(autoincrement())
+  id        Int                   @id @default(autoincrement())
+  createdAt DateTime              @default(now())
+  updatedAt DateTime              @updatedAt
+  type      String
+  href      String
+  users     UserResourceLink[]
+  reviews   Review[]
+  roadmaps  ResourceRoadmapLink[]
+}
+
+model UserResourceLink {
+  id         Int       @id @default(autoincrement())
+  isAuthor   Boolean
+  name       String
+  status     String    @default("saved")
+  tags       String[]
+  notes      String?
+  chapters   Chapter[]
+  user       User      @relation(fields: [userId], references: [id])
+  userId     Int
+  resource   Resource  @relation(fields: [resourceId], references: [id])
+  resourceId Int
+
+  @@unique([userId, resourceId])
+}
+
+model Chapter {
+  id                 Int              @id @default(autoincrement())
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+  index              Int
+  name               String?
+  status             String           @default("unread")
+  userResourceLink   UserResourceLink @relation(fields: [userResourceLinkId], references: [id])
+  userResourceLinkId Int
+}
+
+model Review {
+  id         Int              @id @default(autoincrement())
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+  rating     Float
+  markdown   String
+  author     User             @relation(fields: [authorId], references: [id])
+  authorId   Int
+  resource   Resource         @relation(fields: [resourceId], references: [id])
+  resourceId Int
+  likedBy    UserReviewLike[]
+
+  @@unique([authorId, resourceId])
+}
+
+model UserReviewLike {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  review    Review   @relation(fields: [reviewId], references: [id])
+  reviewId  Int
+}
+
+model Roadmap {
+  id         Int                   @id @default(autoincrement())
+  createdAt  DateTime              @default(now())
+  updatedAt  DateTime              @updatedAt
+  forks      Roadmap[]             @relation("fork")
+  original   Roadmap?              @relation("fork", fields: [originalId], references: [id])
+  originalId Int?
+  users      UserRoadmapLink[]
+  resources  ResourceRoadmapLink[]
+}
+
+model UserRoadmapLink {
+  id        Int     @id @default(autoincrement())
+  user      User    @relation(fields: [userId], references: [id])
+  userId    Int
+  roadmap   Roadmap @relation(fields: [roadmapId], references: [id])
+  roadmapId Int
+
+  @@unique([userId, roadmapId])
+}
+
+model ResourceRoadmapLink {
+  id         Int      @id @default(autoincrement())
+  resource   Resource @relation(fields: [resourceId], references: [id])
+  resourceId Int
+  roadmap    Roadmap  @relation(fields: [roadmapId], references: [id])
+  roadmapId  Int
+
+  @@unique([resourceId, roadmapId])
 }
