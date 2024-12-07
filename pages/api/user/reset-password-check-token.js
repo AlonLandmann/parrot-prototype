@@ -2,7 +2,7 @@ import messages from "@/server/messages";
 import prisma from "@/server/prisma";
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
+  if (req.method !== "POST") {
     return res.status(405).json({ success: false, message: messages.invalidRequestMethod });
   }
 
