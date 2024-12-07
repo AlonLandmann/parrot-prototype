@@ -1,37 +1,53 @@
 import { sendVerificationTokenEmail } from "@/server/email";
-import httpHandler from "@/server/httpHandler";
 import prisma from "@/server/prisma";
 import { generateSixDigitToken } from "@/server/tokens";
 import sha256 from "sha256";
 
-export default httpHandler('POST', async (req, res) => {
-  const { email, password } = req.body;
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ success: false, message: "Invalid request method." });
+  }
 
-  const existingEmail = await prisma.user.findUnique({
-    where: {
-      email: email,
-    },
-  });
+  let existingUser;
 
-  if (existingEmail) {
+  try {
+    existingUser = await prisma.user.findUnique({
+      where: {
+        email: req.body.email,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ success: false, message: "Internal server error." });
+  }
+
+  if (existingUser) {
     return res.status(409).json({ success: false, message: "A user with this email address already exists. Try to log in instead." });
   }
 
-  const newUser = await prisma.user.create({
-    data: {
-      email: email,
-      hash: sha256(password + process.env.PASSWORD_SALT),
-      verificationToken: generateSixDigitToken(),
-    },
-    select: {
-      email: true,
-      verificationToken: true,
-      sessionToken: true,
-    },
-  });
+  let newUser;
 
-  res.setHeader("Set-Cookie", `parrot-session-id=${newUser.sessionToken}; Path=/api; Max-Age=2592000; HttpOnly; Secure`);
+  try {
+    newUser = await prisma.user.create({
+      data: {
+        email: req.body.email,
+        hash: sha256(req.body.password + process.env.PASSWORD_SALT),
+        verificationToken: generateSixDigitToken(),
+      },
+      select: {
+        email: true,
+        verificationToken: true,
+        sessionToken: true,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ success: false, message: "Internal server error." });
+  }
+
+  res.setHeader("Set-Cookie", `parrotSessionId=${newUser.sessionToken}; Path=/api; Max-Age=2592000; HttpOnly; Secure`);
+
   sendVerificationTokenEmail(newUser.email, newUser.verificationToken);
 
-  return res.status(201).json({ success: true, message: "User created."});
-});
+  return res.status(201).json({ success: true, message: "User created." });
+};

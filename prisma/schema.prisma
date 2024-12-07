@@ -15,7 +15,7 @@ model User {
   hash              String
   isVerified        Boolean            @default(false)
   verificationToken String?
-  sessionToken      String?            @default(uuid())
+  sessionToken      String?            @unique @default(uuid())
   following         Follow[]           @relation("follower")
   followers         Follow[]           @relation("followee")
   notifications     Notification[]
