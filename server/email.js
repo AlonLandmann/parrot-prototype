@@ -34,6 +34,6 @@ export function sendPasswordResetTokenEmail(recipient, token) {
     from: process.env.GMAIL_USER,
     to: recipient,
     subject: "Password Reset Token",
-    text: `Welcome to parrot! Your verfication token is ${token}.`,
+    text: `Welcome to parrot! Your password reset token is ${token}.`,
   });
 };
