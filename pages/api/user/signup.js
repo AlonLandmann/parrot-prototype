@@ -1,11 +1,12 @@
 import { sendVerificationTokenEmail } from "@/server/email";
+import messages from "@/server/messages";
 import prisma from "@/server/prisma";
 import { generateSixDigitToken } from "@/server/tokens";
 import sha256 from "sha256";
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ success: false, message: "Invalid request method." });
+    return res.status(405).json({ success: false, message: messages.invalidRequestMethod });
   }
 
   let existingUser;
@@ -18,7 +19,7 @@ export default async function handler(req, res) {
     });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ success: false, message: "Internal server error." });
+    return res.status(500).json({ success: false, message: messages.internalServerError });
   }
 
   if (existingUser) {
@@ -42,7 +43,7 @@ export default async function handler(req, res) {
     });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ success: false, message: "Internal server error." });
+    return res.status(500).json({ success: false, message: messages.internalServerError });
   }
 
   res.setHeader("Set-Cookie", `parrotSessionId=${newUser.sessionToken}; Path=/api; Max-Age=2592000; HttpOnly; Secure`);
