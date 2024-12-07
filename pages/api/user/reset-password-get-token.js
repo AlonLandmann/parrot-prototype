@@ -1,7 +1,7 @@
+import { sendPasswordResetTokenEmail } from "@/server/email";
 import messages from "@/server/messages";
 import prisma from "@/server/prisma";
-import sha256 from "sha256";
-import { v4 } from "uuid";
+import { generateSixDigitToken } from "@/server/tokens";
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -15,9 +15,6 @@ export default async function handler(req, res) {
       where: {
         email: req.body.email,
       },
-      select: {
-        hash: true,
-      },
     });
   } catch (error) {
     console.log(error);
@@ -25,11 +22,7 @@ export default async function handler(req, res) {
   }
 
   if (!user) {
-    return res.status(401).json({ success: false, message: messages.userWithEmailNotFound });
-  }
-
-  if (sha256(req.body.password + process.env.PASSWORD_SALT) !== user.hash) {
-    return res.status(401).json({ success: false, message: "Password is incorrect." });
+    return res.status(400).json({ success: false, message: messages.userWithEmailNotFound });
   }
 
   try {
@@ -38,10 +31,11 @@ export default async function handler(req, res) {
         email: req.body.email,
       },
       data: {
-        sessionToken: v4(),
+        passwordResetToken: generateSixDigitToken(),
       },
       select: {
-        sessionToken: true,
+        email: true,
+        passwordResetToken: true,
       },
     });
   } catch (error) {
@@ -49,7 +43,9 @@ export default async function handler(req, res) {
     return res.status(500).json({ success: false, message: messages.internalServerError });
   }
 
-  res.setHeader("Set-Cookie", `parrotSessionId=${user.sessionToken}; Path=/api; Max-Age=2592000; HttpOnly; Secure`);
+  console.log(user)
 
-  return res.status(200).json({ success: true, message: "Login successful." });
+  sendPasswordResetTokenEmail(user.email, user.passwordResetToken);
+
+  return res.status(200).json({ success: true, message: "A reset token has been sent to your email." });
 };

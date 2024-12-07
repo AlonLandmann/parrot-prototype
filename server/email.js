@@ -20,11 +20,20 @@ function sendEmail(options) {
   });
 }
 
-export function sendVerificationTokenEmail(recipient, token) {
+export function sendEmailVerificationTokenEmail(recipient, token) {
   sendEmail({
     from: process.env.GMAIL_USER,
     to: recipient,
-    subject: "Parrot Verification Token",
+    subject: "Email Verification Token",
+    text: `Welcome to parrot! Your verfication token is ${token}.`,
+  });
+};
+
+export function sendPasswordResetTokenEmail(recipient, token) {
+  sendEmail({
+    from: process.env.GMAIL_USER,
+    to: recipient,
+    subject: "Password Reset Token",
     text: `Welcome to parrot! Your verfication token is ${token}.`,
   });
 };

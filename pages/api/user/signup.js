@@ -1,4 +1,4 @@
-import { sendVerificationTokenEmail } from "@/server/email";
+import { sendEmailVerificationTokenEmail } from "@/server/email";
 import messages from "@/server/messages";
 import prisma from "@/server/prisma";
 import { generateSixDigitToken } from "@/server/tokens";
@@ -48,7 +48,7 @@ export default async function handler(req, res) {
 
   res.setHeader("Set-Cookie", `parrotSessionId=${newUser.sessionToken}; Path=/api; Max-Age=2592000; HttpOnly; Secure`);
 
-  sendVerificationTokenEmail(newUser.email, newUser.verificationToken);
+  sendEmailVerificationTokenEmail(newUser.email, newUser.verificationToken);
 
   return res.status(201).json({ success: true, message: "User created." });
 };
