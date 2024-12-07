@@ -25,15 +25,15 @@ export function sendEmailVerificationTokenEmail(recipient, token) {
     from: process.env.GMAIL_USER,
     to: recipient,
     subject: "Email Verification Token",
-    text: `Welcome to parrot! Your verfication token is ${token}.`,
+    text: `Welcome to parrot! Your verfication token is ${token}. This token will expire in 120 seconds.`,
   });
 };
 
-export function sendPasswordResetTokenEmail(recipient, token) {
+export function sendGeneratedTokenEmail(recipient, token) {
   sendEmail({
     from: process.env.GMAIL_USER,
     to: recipient,
-    subject: "Password Reset Token",
-    text: `Hi! Your password reset token is ${token}.`,
+    subject: "Parrot Verification Token",
+    text: `Hi! Parrot has generated the following token for you: ${token}. This token will expire in 120 seconds.`,
   });
 };

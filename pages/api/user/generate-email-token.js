@@ -1,4 +1,4 @@
-import { sendPasswordResetTokenEmail } from "@/server/email";
+import { sendGeneratedTokenEmail } from "@/server/email";
 import messages from "@/server/messages";
 import prisma from "@/server/prisma";
 import { generateSixDigitToken } from "@/server/tokens";
@@ -6,6 +6,10 @@ import { generateSixDigitToken } from "@/server/tokens";
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ success: false, message: messages.invalidRequestMethod });
+  }
+
+  if (!req.body.email) {
+    return res.status(400).json({ success: false, message: messages.missingFormData });
   }
 
   let user;
@@ -31,11 +35,12 @@ export default async function handler(req, res) {
         email: req.body.email,
       },
       data: {
-        passwordResetToken: generateSixDigitToken(),
+        emailToken: generateSixDigitToken(),
+        emailTokenExpirationDate: new Date(Date.now() + 120 * 1000),
       },
       select: {
         email: true,
-        passwordResetToken: true,
+        emailToken: true,
       },
     });
   } catch (error) {
@@ -43,9 +48,7 @@ export default async function handler(req, res) {
     return res.status(500).json({ success: false, message: messages.internalServerError });
   }
 
-  console.log(user)
-
-  sendPasswordResetTokenEmail(user.email, user.passwordResetToken);
+  sendGeneratedTokenEmail(user.email, user.emailToken);
 
   return res.status(200).json({ success: true, message: "A reset token has been sent to your email." });
 };
