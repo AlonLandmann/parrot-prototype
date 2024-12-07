@@ -8,27 +8,21 @@ datasource db {
 }
 
 model User {
-  id             Int                @id @default(autoincrement())
-  createdAt      DateTime           @default(now())
-  updatedAt      DateTime           @updatedAt
-  email          String             @unique
-  hash           String
-  session        Session?
-  following      Follow[]           @relation("follower")
-  followers      Follow[]           @relation("followee")
-  notifications  Notification[]
-  resources      UserResourceLink[]
-  reviewsWritten Review[]
-  reviewsLiked   UserReviewLike[]
-  roadmaps       UserRoadmapLink[]
-}
-
-model Session {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now())
-  token     String   @unique @default(uuid())
-  user      User     @relation(fields: [userId], references: [id])
-  userId    Int      @unique
+  id                Int                @id @default(autoincrement())
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  email             String             @unique
+  hash              String
+  isVerified        Boolean            @default(false)
+  verificationToken String?
+  sessionToken      String?            @default(uuid())
+  following         Follow[]           @relation("follower")
+  followers         Follow[]           @relation("followee")
+  notifications     Notification[]
+  resources         UserResourceLink[]
+  reviewsWritten    Review[]
+  reviewsLiked      UserReviewLike[]
+  roadmaps          UserRoadmapLink[]
 }
 
 model Follow {
