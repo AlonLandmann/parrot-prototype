@@ -3,10 +3,19 @@ import messages from "@/server/messages";
 import prisma from "@/server/prisma";
 import { generateSixDigitToken } from "@/server/tokens";
 import sha256 from "sha256";
+import { v4 } from "uuid";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ success: false, message: messages.invalidRequestMethod });
+  }
+
+  if (!req.body.email) {
+    return res.status(400).json({ success: false, message: messages.missingFormData });
+  }
+
+  if (!req.body.password) {
+    return res.status(400).json({ success: false, message: messages.missingFormData });
   }
 
   let existingUser;
@@ -33,12 +42,14 @@ export default async function handler(req, res) {
       data: {
         email: req.body.email,
         hash: sha256(req.body.password + process.env.PASSWORD_SALT),
-        verificationToken: generateSixDigitToken(),
+        emailToken: generateSixDigitToken(),
+        emailTokenExpirationDate: new Date(Date.now() + 120 * 1000),
+        sessionCookie: v4(),
       },
       select: {
         email: true,
-        verificationToken: true,
-        sessionToken: true,
+        emailToken: true,
+        sessionCookie: true,
       },
     });
   } catch (error) {
@@ -46,9 +57,9 @@ export default async function handler(req, res) {
     return res.status(500).json({ success: false, message: messages.internalServerError });
   }
 
-  res.setHeader("Set-Cookie", `parrotSessionId=${newUser.sessionToken}; Path=/api; Max-Age=2592000; HttpOnly; Secure`);
+  res.setHeader("Set-Cookie", `parrotSessionId=${newUser.sessionCookie}; Path=/api; Max-Age=${30 * 24 * 60 * 60}; HttpOnly; Secure`);
 
-  sendEmailVerificationTokenEmail(newUser.email, newUser.verificationToken);
+  sendEmailVerificationTokenEmail(newUser.email, newUser.emailToken);
 
-  return res.status(201).json({ success: true, message: "User created." });
+  return res.status(201).json({ success: true, message: "Signup successful." });
 };
