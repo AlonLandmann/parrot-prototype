@@ -50,5 +50,5 @@ export default async function handler(req, res) {
 
   sendGeneratedTokenEmail(user.email, user.emailToken);
 
-  return res.status(200).json({ success: true, message: "A reset token has been sent to your email." });
+  return res.status(200).json({ success: true, message: "A verfication token has been sent to your email." });
 };

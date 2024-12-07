@@ -1,5 +1,6 @@
 import messages from "@/server/messages";
 import prisma from "@/server/prisma";
+import { v4 } from "uuid";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -43,8 +44,10 @@ export default async function handler(req, res) {
     return res.status(400).json({ success: false, message: "Token is incorrect." });
   }
 
+  let resetPassword = req.query.setPasswordResetSessionCookie === "true";
+
   try {
-    await prisma.user.update({
+    user = await prisma.user.update({
       where: {
         email: req.body.email,
       },
@@ -52,11 +55,19 @@ export default async function handler(req, res) {
         isVerified: true,
         emailToken: null,
         emailTokenExpirationDate: null,
-      }
+        passwordResetSessionCookie: resetPassword ? v4() : null,
+      },
+      select: {
+        passwordResetSessionCookie: true,
+      },
     });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ success: false, message: messages.internalServerError });
+  }
+
+  if (resetPassword) {
+    res.setHeader("Set-Cookie", `parrotPasswordResetSessionId=${user.passwordResetSessionCookie}; Path=/; Max-Age=${2 * 60}; HttpOnly; Secure`);
   }
 
   return res.status(200).json({ success: true, message: "Token check successful." });
