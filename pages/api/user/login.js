@@ -8,6 +8,14 @@ export default async function handler(req, res) {
     return res.status(405).json({ success: false, message: messages.invalidRequestMethod });
   }
 
+  if (!req.body.email) {
+    return res.status(400).json({ success: false, message: messages.missingFormData });
+  }
+
+  if (!req.body.password) {
+    return res.status(400).json({ success: false, message: messages.missingFormData });
+  }
+
   let user;
 
   try {
@@ -38,10 +46,10 @@ export default async function handler(req, res) {
         email: req.body.email,
       },
       data: {
-        sessionToken: v4(),
+        sessionCookie: v4(),
       },
       select: {
-        sessionToken: true,
+        sessionCookie: true,
       },
     });
   } catch (error) {
@@ -49,7 +57,7 @@ export default async function handler(req, res) {
     return res.status(500).json({ success: false, message: messages.internalServerError });
   }
 
-  res.setHeader("Set-Cookie", `parrotSessionId=${user.sessionToken}; Path=/api; Max-Age=2592000; HttpOnly; Secure`);
+  res.setHeader("Set-Cookie", `parrotSessionId=${user.sessionCookie}; Path=/api; Max-Age=2592000; HttpOnly; Secure`);
 
   return res.status(200).json({ success: true, message: "Login successful." });
 };
