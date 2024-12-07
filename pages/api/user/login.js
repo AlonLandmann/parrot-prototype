@@ -57,7 +57,7 @@ export default async function handler(req, res) {
     return res.status(500).json({ success: false, message: messages.internalServerError });
   }
 
-  res.setHeader("Set-Cookie", `parrotSessionId=${user.sessionCookie}; Path=/api; Max-Age=2592000; HttpOnly; Secure`);
+  res.setHeader("Set-Cookie", `parrotSessionId=${user.sessionCookie}; Path=/; Max-Age=2592000; HttpOnly; Secure`);
 
   return res.status(200).json({ success: true, message: "Login successful." });
 };
