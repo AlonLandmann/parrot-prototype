@@ -8,22 +8,23 @@ datasource db {
 }
 
 model User {
-  id                 Int                @id @default(autoincrement())
-  createdAt          DateTime           @default(now())
-  updatedAt          DateTime           @updatedAt
-  email              String             @unique
-  hash               String
-  isVerified         Boolean            @default(false)
-  verificationToken  String?
-  sessionToken       String?            @unique @default(uuid())
-  passwordResetToken String?
-  following          Follow[]           @relation("follower")
-  followers          Follow[]           @relation("followee")
-  notifications      Notification[]
-  resources          UserResourceLink[]
-  reviewsWritten     Review[]
-  reviewsLiked       UserReviewLike[]
-  roadmaps           UserRoadmapLink[]
+  id                        Int                @id @default(autoincrement())
+  createdAt                 DateTime           @default(now())
+  updatedAt                 DateTime           @updatedAt
+  email                     String             @unique
+  hash                      String
+  isVerified                Boolean            @default(false)
+  emailToken                String?
+  emailTokenExpirationDate  DateTime?
+  sessionToken              String?            @unique
+  passwordResetSessionToken String?            @unique
+  following                 Follow[]           @relation("follower")
+  followers                 Follow[]           @relation("followee")
+  notifications             Notification[]
+  resources                 UserResourceLink[]
+  reviewsWritten            Review[]
+  reviewsLiked              UserReviewLike[]
+  roadmaps                  UserRoadmapLink[]
 }
 
 model Follow {
