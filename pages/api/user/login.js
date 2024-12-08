@@ -49,6 +49,8 @@ export default async function handler(req, res) {
         sessionCookie: v4(),
       },
       select: {
+        email: true,
+        isVerified: true,
         sessionCookie: true,
       },
     });
@@ -59,5 +61,5 @@ export default async function handler(req, res) {
 
   res.setHeader("Set-Cookie", `parrotSessionId=${user.sessionCookie}; Path=/; Max-Age=${30 * 24 * 60 * 60}; HttpOnly; Secure`);
 
-  return res.status(200).json({ success: true, message: "Login successful." });
+  return res.status(200).json({ success: true, userEmail: user.email, userVerified: user.isVerified });
 };

@@ -16,7 +16,11 @@ export default function LoginRoot() {
     const json = await res.json();
 
     if (json.success) {
-      window.location = "/app";
+      if (json.userVerified) {
+        window.location = "/app";
+      } else {
+        window.location = `/verify?email=${json.userEmail}&sendToken=true`
+      }
     } else {
       window.alert(json.message);
     }
