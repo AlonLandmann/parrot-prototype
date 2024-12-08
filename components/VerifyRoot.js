@@ -10,9 +10,6 @@ export default function VerifyRoot() {
 
     if (params.has("email")) {
       setEmail(params.get("email"));
-    }
-
-    if (params.has("email") && params.has("sendToken")) {
       sendEmailToken(params.get("email"));
     }
   }, []);

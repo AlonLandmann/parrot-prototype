@@ -55,7 +55,7 @@ export default function AppRoot() {
             log out
           </button>
           {!user.isVerified &&
-            <a href={`/verify?email=${user.email}&sendToken=true`}>
+            <a href={`/verify?email=${user.email}`}>
               verify email address
             </a>
           }

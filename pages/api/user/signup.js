@@ -1,7 +1,6 @@
-import { sendGeneratedTokenEmail, sendWelcomeEmail } from "@/server/email";
+import { sendWelcomeEmail } from "@/server/email";
 import messages from "@/server/messages";
 import prisma from "@/server/prisma";
-import { generateSixDigitToken } from "@/server/tokens";
 import { validateEmail, validatePassword } from "@/server/validate";
 import sha256 from "sha256";
 import { v4 } from "uuid";
@@ -51,13 +50,10 @@ export default async function handler(req, res) {
       data: {
         email: req.body.email,
         hash: sha256(req.body.password + process.env.PASSWORD_SALT),
-        emailToken: generateSixDigitToken(),
-        emailTokenExpirationDate: new Date(Date.now() + 120 * 1000),
         sessionCookie: v4(),
       },
       select: {
         email: true,
-        emailToken: true,
         sessionCookie: true,
       },
     });
@@ -69,7 +65,6 @@ export default async function handler(req, res) {
   res.setHeader("Set-Cookie", `parrotSessionId=${newUser.sessionCookie}; Path=/; Max-Age=${30 * 24 * 60 * 60}; HttpOnly; Secure`);
 
   sendWelcomeEmail(newUser.email);
-  sendGeneratedTokenEmail(newUser.email, newUser.emailToken);
 
   return res.status(201).json({ success: true, email: newUser.email });
 };

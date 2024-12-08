@@ -19,7 +19,7 @@ export default function LoginRoot() {
       if (json.userVerified) {
         window.location = "/app";
       } else {
-        window.location = `/verify?email=${json.userEmail}&sendToken=true`
+        window.location = `/verify?email=${json.userEmail}`
       }
     } else {
       window.alert(json.message);
