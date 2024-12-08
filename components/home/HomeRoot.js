@@ -1,7 +1,8 @@
 export default function HomeRoot() {
   return (
-    <div className="text-green-900">
-      Hello, parrot!
+    <div>
+      <div><h1>Home</h1></div>
+      <div><a href="/app">app</a></div>
     </div>
   );
-}
+};
