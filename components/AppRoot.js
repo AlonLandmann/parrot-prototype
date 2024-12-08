@@ -34,6 +34,9 @@ export default function AppRoot() {
 
   return (
     <div>
+      <a href="/">
+        home
+      </a>
       <h1>App</h1>
       {!loading && !user &&
         <div className="flex flex-col items-start">
