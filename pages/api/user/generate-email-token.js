@@ -26,7 +26,7 @@ export default async function handler(req, res) {
   }
 
   if (!user) {
-    return res.status(400).json({ success: false, message: messages.userWithEmailNotFound });
+    return res.status(401).json({ success: false, message: messages.userWithEmailNotFound });
   }
 
   try {

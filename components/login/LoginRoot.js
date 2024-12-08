@@ -1,14 +1,54 @@
+import { useState } from "react";
+
 export default function LoginRoot() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  async function handleLogin(e) {
+    e.preventDefault();
+
+    const res = await fetch("/api/user/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const json = await res.json();
+
+    console.log(json);
+  }
+
   return (
-    <div>
-      <div><h1>Login</h1></div>
-      <form>
-        <div><input placeholder="email" /></div>
-        <div><input placeholder="password" /></div>
-        <div><button>log in</button></div>
+    <div className='flex flex-col'>
+      <h1>
+        Login
+      </h1>
+      <form
+        className='flex flex-col items-start'
+        onSubmit={handleLogin}
+      >
+        <input
+          type="email"
+          placeholder="email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder="password"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+        />
+        <button>
+          log in
+        </button>
       </form>
-      <div><a href="/signup">sign up instead</a></div>
-      <div><a href="/reset">forgot password</a></div>
+      <a href="/signup">
+        sign up instead
+      </a>
+      <a href="/reset">
+        forgot password
+      </a>
     </div>
   );
 };
