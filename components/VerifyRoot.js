@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 export default function VerifyRoot() {
   const [email, setEmail] = useState("");
   const [emailToken, setEmailToken] = useState("");
+  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -44,7 +45,7 @@ export default function VerifyRoot() {
     const json = await res.json();
 
     if (json.success) {
-      window.location = "/app";
+      setSuccess(true);
     } else {
       window.alert(json.message);
     }
@@ -52,27 +53,43 @@ export default function VerifyRoot() {
 
   return (
     <div className="flex flex-col items-start">
-      <h1>Verify</h1>
-      <form
-        className="flex flex-col items-start"
-        onSubmit={handleCheck}
-      >
-        <input
-          type="text"
-          placeholder="6-digit token"
-          value={emailToken}
-          onChange={e => setEmailToken(e.target.value)}
-        />
-        <button>
-          confirm
-        </button>
-      </form>
-      <button onClick={() => sendEmailToken(email)}>
-        send new token
-      </button>
-      <a href="/app">
-        skip for now
-      </a>
+      <h1>
+        Verify
+      </h1>
+      {!success &&
+        <>
+          <form
+            className="flex flex-col items-start"
+            onSubmit={handleCheck}
+          >
+            <input
+              type="text"
+              placeholder="6-digit token"
+              value={emailToken}
+              onChange={e => setEmailToken(e.target.value)}
+            />
+            <button>
+              confirm
+            </button>
+          </form>
+          <button onClick={() => sendEmailToken(email)}>
+            send new token
+          </button>
+          <a href="/app">
+            skip for now
+          </a>
+        </>
+      }
+      {success &&
+        <>
+          <p>
+            Your email has been verified successfully.
+          </p>
+          <a href="/app">
+            App
+          </a>
+        </>
+      }
     </div>
   );
 };
