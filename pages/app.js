@@ -1,5 +1,5 @@
-import AppRoot from "@/components/app/AppRoot";
-import Page from "@/components/layout/Page";
+import AppRoot from "@/components/AppRoot";
+import Page from "@/components/Page";
 
 export default function AppPage() {
   return (

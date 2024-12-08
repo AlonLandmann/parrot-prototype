@@ -1,5 +1,5 @@
-import Page from "@/components/layout/Page";
-import LoginRoot from "@/components/login/LoginRoot";
+import Page from "@/components/Page";
+import LoginRoot from "@/components/LoginRoot";
 
 export default function LoginPage() {
   return (

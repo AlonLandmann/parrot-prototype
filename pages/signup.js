@@ -1,5 +1,5 @@
-import Page from "@/components/layout/Page";
-import SignupRoot from "@/components/signup/SignupRoot";
+import Page from "@/components/Page";
+import SignupRoot from "@/components/SignupRoot";
 
 export default function SignupPage() {
   return (
