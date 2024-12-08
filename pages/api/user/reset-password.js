@@ -64,8 +64,8 @@ export default async function (req, res) {
     return res.status(500).json({ success: false, message: messages.internalServerError });
   }
 
-  res.setHeader("Set-Cookie", `parrotSessionId=; Path=/; Max-Age=0; HttpOnly; Secure`);
-  res.setHeader("Set-Cookie", `parrotPasswordResetSessionId=; Path=/; Max-Age=0; HttpOnly; Secure`);
+  res.setHeader("Set-Cookie", `parrotSessionId=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=Lax`);
+  res.setHeader("Set-Cookie", `parrotPasswordResetSessionId=; Path=/; Max-Age=0; HttpOnly; Secure; SameSite=Lax`);
 
   return res.status(200).json({ success: true, message: "Password updated." });
 };

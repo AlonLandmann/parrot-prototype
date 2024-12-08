@@ -59,7 +59,7 @@ export default async function handler(req, res) {
     return res.status(500).json({ success: false, message: messages.internalServerError });
   }
 
-  res.setHeader("Set-Cookie", `parrotSessionId=${user.sessionCookie}; Path=/; Max-Age=${30 * 24 * 60 * 60}; HttpOnly; Secure`);
+  res.setHeader("Set-Cookie", `parrotSessionId=${user.sessionCookie}; Path=/; Max-Age=${30 * 24 * 60 * 60}; HttpOnly; Secure; SameSite=Lax`);
 
   return res.status(200).json({ success: true, userEmail: user.email, userVerified: user.isVerified });
 };
