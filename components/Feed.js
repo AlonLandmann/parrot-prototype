@@ -64,6 +64,7 @@ export default function Feed() {
           <option value="textbook">Textbook</option>
           <option value="online-course">Online Course</option>
           <option value="manual">Manual</option>
+          <option value="tutorial">Tutorial</option>
           <option value="reference">Reference</option>
         </select>
         <input
