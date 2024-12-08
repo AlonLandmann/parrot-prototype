@@ -15,16 +15,20 @@ export default function LoginRoot() {
 
     const json = await res.json();
 
-    console.log(json);
+    if (json.success) {
+      window.location = "/app";
+    } else {
+      console.log(json.message);
+    }
   }
 
   return (
-    <div className='flex flex-col'>
+    <div className="flex flex-col items-start">
       <h1>
         Login
       </h1>
       <form
-        className='flex flex-col items-start'
+        className="flex flex-col items-start"
         onSubmit={handleLogin}
       >
         <input
