@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function Feed({ user }) {
+export default function Feed() {
   const [resource, setResource] = useState({
     type: "video",
     href: "",

@@ -65,7 +65,7 @@ export default function AppPage() {
             <a href="/reset">
               reset password
             </a>
-            <Feed user={user} />
+            <Feed />
           </div>
         }
       </div>
