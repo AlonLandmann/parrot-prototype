@@ -1,5 +1,6 @@
 import messages from "@/server/messages";
 import prisma from "@/server/prisma";
+import { validatePassword } from "@/server/validate";
 import sha256 from "sha256";
 
 export default async function (req, res) {
@@ -17,6 +18,10 @@ export default async function (req, res) {
 
   if (!req.body.newPassword) {
     return res.status(400).json({ success: false, message: messages.missingFormData });
+  }
+
+  if (!validatePassword(req.body.newPassword)) {
+    return res.status(422).json({ success: false, message: "Password validation failed." });
   }
 
   let user;

@@ -49,7 +49,7 @@ export default function VerifyPage() {
 
     if (json.success) {
       if (resetPassword) {
-        window.location = "/reset?session=active";
+        window.location = `/reset?email=${email}`;
       } else {
         setSuccess(true);
       }
