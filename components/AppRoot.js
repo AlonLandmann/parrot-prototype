@@ -46,6 +46,9 @@ export default function AppRoot() {
       }
       {!loading && user &&
         <div className="flex flex-col items-start">
+          <p>
+            Hello {user.email}!
+          </p>
           <button onClick={handleLogout}>
             log out
           </button>
