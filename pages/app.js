@@ -1,3 +1,4 @@
+import Feed from "@/components/Feed";
 import Page from "@/components/Page";
 import { useEffect, useState } from "react";
 
@@ -64,6 +65,7 @@ export default function AppPage() {
             <a href="/reset">
               reset password
             </a>
+            <Feed user={user} />
           </div>
         }
       </div>
