@@ -5,19 +5,21 @@ export default function AppRoot() {
   const [loading, setLoading] = useState(null);
 
   useEffect(() => {
-    (async () => {
-      const res = await fetch("/api/user/get-metadata");
-      const json = await res.json();
-
-      if (json.success) {
-        setUser(json.data);
-        setLoading(false);
-      } else {
-        console.log(json.message);
-        setLoading(false);
-      }
-    })();
+    loadUserData();
   }, []);
+
+  async function loadUserData() {
+    const res = await fetch("/api/user/get-metadata");
+    const json = await res.json();
+
+    if (json.success) {
+      setUser(json.user);
+      setLoading(false);
+    } else {
+      console.log(json.message);
+      setLoading(false);
+    }
+  }
 
   async function handleLogout() {
     const res = await fetch("/api/user/logout", { method: "POST" });
@@ -26,7 +28,7 @@ export default function AppRoot() {
     if (json.success) {
       window.location.reload();
     } else {
-      console.log(json.message);
+      window.alert(json.message);
     }
   }
 

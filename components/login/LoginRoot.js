@@ -18,12 +18,15 @@ export default function LoginRoot() {
     if (json.success) {
       window.location = "/app";
     } else {
-      console.log(json.message);
+      window.alert(json.message);
     }
   }
 
   return (
     <div className="flex flex-col items-start">
+      <a href="/">
+        home
+      </a>
       <h1>
         Login
       </h1>

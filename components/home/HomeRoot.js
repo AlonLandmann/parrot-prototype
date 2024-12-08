@@ -1,8 +1,15 @@
 export default function HomeRoot() {
   return (
-    <div>
-      <div><h1>Home</h1></div>
-      <div><a href="/app">app</a></div>
+    <div className="flex flex-col items-start">
+      <a href="/">
+        home
+      </a>
+      <h1>
+        Home
+      </h1>
+      <a href="/app">
+        app
+      </a>
     </div>
   );
 };

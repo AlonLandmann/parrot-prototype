@@ -71,5 +71,5 @@ export default async function handler(req, res) {
   sendWelcomeEmail(newUser.email);
   sendGeneratedTokenEmail(newUser.email, newUser.emailToken);
 
-  return res.status(201).json({ success: true, message: "Signup successful." });
+  return res.status(201).json({ success: true, email: newUser.email });
 };
