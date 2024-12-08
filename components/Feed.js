@@ -1,11 +1,27 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Feed() {
+  const [feed, setFeed] = useState([])
   const [resource, setResource] = useState({
     type: "video",
     href: "",
     name: "",
   });
+
+  useEffect(() => {
+    loadFeed();
+  }, [])
+
+  async function loadFeed() {
+    const res = await fetch("/api/resource/get-user-resources");
+    const json = await res.json();
+
+    if (json.success) {
+      setFeed(json.resources);
+    } else {
+      console.log(json.message);
+    }
+  }
 
   async function handleAddResource(e) {
     e.preventDefault()
@@ -26,10 +42,15 @@ export default function Feed() {
   }
 
   return (
-    <div>
+    <div className="flex flex-col items-start">
       <h2>
         Feed
       </h2>
+      {feed.map(item => (
+        <div key={item.id}>
+          {JSON.stringify(item)}
+        </div>
+      ))}
       <form
         className="flex flex-col items-start"
         onSubmit={handleAddResource}
