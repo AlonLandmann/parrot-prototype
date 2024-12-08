@@ -44,8 +44,6 @@ export default async function handler(req, res) {
     return res.status(400).json({ success: false, message: "Token is incorrect." });
   }
 
-  let resetPassword = req.query.setPasswordResetSessionCookie === "true";
-
   try {
     user = await prisma.user.update({
       where: {
@@ -55,7 +53,7 @@ export default async function handler(req, res) {
         isVerified: true,
         emailToken: null,
         emailTokenExpirationDate: null,
-        passwordResetSessionCookie: resetPassword ? v4() : null,
+        passwordResetSessionCookie: req.query.resetPassword === "true" ? v4() : null,
       },
       select: {
         passwordResetSessionCookie: true,
@@ -66,7 +64,7 @@ export default async function handler(req, res) {
     return res.status(500).json({ success: false, message: messages.internalServerError });
   }
 
-  if (resetPassword) {
+  if (req.query.resetPassword === "true") {
     res.setHeader("Set-Cookie", `parrotPasswordResetSessionId=${user.passwordResetSessionCookie}; Path=/; Max-Age=${2 * 60}; HttpOnly; Secure`);
   }
 

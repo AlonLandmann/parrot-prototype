@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 export default function VerifyPage() {
   const [email, setEmail] = useState("");
   const [emailToken, setEmailToken] = useState("");
+  const [resetPassword, setResetPassword] = useState(false);
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
@@ -12,6 +13,10 @@ export default function VerifyPage() {
     if (params.has("email")) {
       setEmail(params.get("email"));
       sendEmailToken(params.get("email"));
+    }
+
+    if (params.has("resetPassword")) {
+      setResetPassword(true);
     }
   }, []);
 
@@ -34,7 +39,7 @@ export default function VerifyPage() {
   async function handleCheck(e) {
     e.preventDefault();
 
-    const res = await fetch("/api/user/check-email-token", {
+    const res = await fetch(`/api/user/check-email-token?resetPassword=${resetPassword}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, emailToken }),
@@ -43,7 +48,11 @@ export default function VerifyPage() {
     const json = await res.json();
 
     if (json.success) {
-      setSuccess(true);
+      if (resetPassword) {
+        window.location = "/reset?session=active";
+      } else {
+        setSuccess(true);
+      }
     } else {
       window.alert(json.message);
     }
