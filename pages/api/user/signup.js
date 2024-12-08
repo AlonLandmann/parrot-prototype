@@ -2,6 +2,7 @@ import { sendGeneratedTokenEmail, sendWelcomeEmail } from "@/server/email";
 import messages from "@/server/messages";
 import prisma from "@/server/prisma";
 import { generateSixDigitToken } from "@/server/tokens";
+import { validateEmail, validatePassword } from "@/server/validate";
 import sha256 from "sha256";
 import { v4 } from "uuid";
 
@@ -16,6 +17,14 @@ export default async function handler(req, res) {
 
   if (!req.body.password) {
     return res.status(400).json({ success: false, message: messages.missingFormData });
+  }
+
+  if (!validateEmail(req.body.email)) {
+    return res.status(422).json({ success: false, message: "Email validation failed." });
+  }
+
+  if (!validatePassword(req.body.password)) {
+    return res.status(422).json({ success: false, message: "Password validation failed." });
   }
 
   let existingUser;
