@@ -20,12 +20,12 @@ function sendEmail(options) {
   });
 }
 
-export function sendEmailVerificationTokenEmail(recipient, token) {
+export function sendWelcomeEmail(recipient) {
   sendEmail({
     from: process.env.GMAIL_USER,
     to: recipient,
-    subject: "Email Verification Token",
-    text: `Welcome to parrot! Your verfication token is ${token}. This token will expire in 120 seconds.`,
+    subject: "Welcome to parrot",
+    text: `Welcome to parrot! Glad to have you on board. If you have any inquiries, please feel free to respond to this email.`,
   });
 };
 
@@ -33,7 +33,7 @@ export function sendGeneratedTokenEmail(recipient, token) {
   sendEmail({
     from: process.env.GMAIL_USER,
     to: recipient,
-    subject: "Parrot Verification Token",
-    text: `Hi! Parrot has generated the following token for you: ${token}. This token will expire in 120 seconds.`,
+    subject: "Verification Token - parrot",
+    text: `Hi! Parrot has generated the following verification token for you: ${token}. This token will expire in 120 seconds.`,
   });
 };
